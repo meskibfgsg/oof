@@ -1,6 +1,5 @@
-name = "rottenbeer-profile"
-pages_build_output_dir = "dist"
+name = "oof"
+compatibility_date = "2026-09-08"
 
-[build]
-command = "npm install && npm run build"
-cwd = "./"
+[assets]
+directory = "./dist"
