@@ -17,7 +17,7 @@ import { AmbientField } from "./AmbientField";
 
 const DISCORD_ID = "1526063230722773265";
 const DISPLAY_NAME_FALLBACK = "rottenbeer";
-const USERNAME_FALLBACK = "rottenbeer";
+const USERNAME_FALLBACK = "rottenbeer.";
 const TAGLINE = "night owl · builds things · probably lurking";
 
 const SOCIALS: { label: string; href: string; icon: JSX.Element }[] = [
