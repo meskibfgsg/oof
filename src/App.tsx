@@ -28,7 +28,8 @@ const SOCIALS: { label: string; href: string; icon: JSX.Element }[] = [
   { label: "Twitch", href: "https://twitch.tv/rottenbeer", icon: <IconTwitch /> },
 ];
 
-const BADGES = ["Early Supporter", "Verified"];
+const BIO = "A Dev • Cider enthusiast • Building cool stuff";
+const BACKGROUND_MUSIC = "https://youtu.be/hmdzniMJOZs?si=eG9FoIVtD81cwAkv";
 
 /* ------------------------------------------------------------------ */
 
@@ -100,6 +101,19 @@ export default function App() {
       (s) => setConnection(s),
     );
     return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    // Background music autoplay
+    const audio = new Audio("/phantom.mp3");
+    audio.loop = true;
+    audio.volume = 0.3;
+    audio.play().catch(() => {
+      // Autoplay blocked - user interaction required
+    });
+    return () => {
+      audio.pause();
+    };
   }, []);
 
   const lastSeen = useLastSeen(data?.discord_status);
@@ -184,19 +198,13 @@ export default function App() {
             <div className="idBlock">
               <div className="nameRow">
                 <h1>{name}</h1>
-                {BADGES.length > 0 && (
-                  <div className="badgeRow">
-                    {BADGES.map((b) => (
-                      <span className="badge" key={b}>{b}</span>
-                    ))}
-                  </div>
-                )}
               </div>
               <button className="handle" onClick={copyId} title="Copy Discord ID">
                 @{username}
                 <span className="copyHint">{copied ? "copied" : DISCORD_ID}</span>
               </button>
               <p className="tagline">{customStatus?.state || TAGLINE}</p>
+              <p className="bio">{BIO}</p>
             </div>
           </header>
 
@@ -312,10 +320,6 @@ export default function App() {
             ))}
           </footer>
         </div>
-
-        <p className="poweredBy">
-          live presence via <a href="https://github.com/Phineas/lanyard" target="_blank" rel="noreferrer">lanyard</a>
-        </p>
       </main>
     </div>
   );
