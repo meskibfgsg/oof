@@ -18,7 +18,7 @@ import { AmbientField } from "./AmbientField";
 const DISCORD_ID = "1526063230722773265";
 const DISPLAY_NAME_FALLBACK = "rottenbeer";
 const USERNAME_FALLBACK = "rottenbeer.";
-const TAGLINE = "night owl · builds things · probably lurking";
+const TAGLINE_FALLBACK = "night owl · builds things · probably lurking";
 
 const SOCIALS: { label: string; href: string; icon: JSX.Element }[] = [
   { label: "Discord", href: "https://discord.com/users/" + DISCORD_ID, icon: <IconDiscord /> },
@@ -28,8 +28,7 @@ const SOCIALS: { label: string; href: string; icon: JSX.Element }[] = [
   { label: "Twitch", href: "https://twitch.tv/rottenbeer", icon: <IconTwitch /> },
 ];
 
-const BIO = "A Dev • Cider enthusiast • Building cool stuff";
-const BACKGROUND_MUSIC = "https://youtu.be/hmdzniMJOZs?si=eG9FoIVtD81cwAkv";
+const BIO_FALLBACK = "A Dev • Cider enthusiast • Building cool stuff";
 
 /* ------------------------------------------------------------------ */
 
@@ -103,15 +102,42 @@ export default function App() {
     return unsubscribe;
   }, []);
 
+  // Audio playback state
+  const [audioLoaded, setAudioLoaded] = useState(false);
+  const [audioError, setAudioError] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
-    // Background music autoplay
-    const audio = new Audio("/phantom.mp3");
+    // Create persistent audio element
+    const audio = new Audio();
+    audio.src = "/phantom.mp3";
     audio.loop = true;
     audio.volume = 0.3;
-    audio.play().catch(() => {
-      // Autoplay blocked - user interaction required
+    audioRef.current = audio;
+
+    // Handle audio loading and playback
+    const playAudio = async () => {
+      try {
+        // Try to play
+        await audio.play();
+        setAudioLoaded(true);
+        setAudioError(null);
+      } catch (err: any) {
+        // Autoplay blocked - user interaction required
+        setAudioLoaded(false);
+      }
+    };
+
+    // Load and attempt autoplay
+    audio.addEventListener("canplay", playAudio);
+    audio.addEventListener("error", () => {
+      setAudioError("Could not load audio file");
     });
+
+    playAudio();
+
     return () => {
+      audio.removeEventListener("canplay", playAudio);
       audio.pause();
     };
   }, []);
@@ -136,6 +162,11 @@ export default function App() {
   const username = user?.username || USERNAME_FALLBACK;
   const avatar = user ? avatarUrl(user, 256) : null;
   const decoration = user ? avatarDecorationUrl(user) : null;
+  
+  // Get bio from Discord user or fallback
+  // Note: Discord doesn't expose bio via Lanyard, so we use custom status or fallback
+  const displayBio = customStatus?.state || BIO_FALLBACK;
+  const displayTagline = TAGLINE_FALLBACK;
 
   function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
     const rect = cardRef.current?.getBoundingClientRect();
@@ -154,6 +185,21 @@ export default function App() {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1600);
     });
+  }
+
+  function handleAudioToggle() {
+    if (audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play().then(() => {
+          setAudioLoaded(true);
+        }).catch(() => {
+          setAudioError("Could not play audio");
+        });
+      } else {
+        audioRef.current.pause();
+        setAudioLoaded(false);
+      }
+    }
   }
 
   const showFallbackNotice = connection === "not_found";
@@ -203,8 +249,13 @@ export default function App() {
                 @{username}
                 <span className="copyHint">{copied ? "copied" : DISCORD_ID}</span>
               </button>
-              <p className="tagline">{customStatus?.state || TAGLINE}</p>
-              <p className="bio">{BIO}</p>
+              <p className="tagline">{displayTagline}</p>
+              {customStatus?.state && (
+                <div className="notesWidget">
+                  <span className="notesLabel">📝</span>
+                  <p className="notes">{customStatus.state}</p>
+                </div>
+              )}
             </div>
           </header>
 
@@ -305,6 +356,14 @@ export default function App() {
           <div className="divider" />
 
           <footer className="socialRow">
+            <button
+              className="audioControl"
+              onClick={handleAudioToggle}
+              title={audioLoaded ? "Mute audio" : "Play audio"}
+              aria-label="Toggle background music"
+            >
+              {audioLoaded ? "🔊" : "🔇"}
+            </button>
             {SOCIALS.map((s) => (
               <a
                 key={s.label}
