@@ -91,17 +91,40 @@ button {
 
 .layout {
   width: 100%;
-  max-width: 880px;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* the profile card is the centered focal point */
+.profileCard {
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  border-color: var(--border-hover);
+  box-shadow:
+    0 24px 70px -30px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 0 60px -20px var(--gold-glow);
+}
+
+/* supporting cards sit below the profile, centered, filling desktop width */
+.sideCol {
+  width: 100%;
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
   align-items: start;
 }
 
 @media (max-width: 760px) {
   .layout {
-    grid-template-columns: 1fr;
     max-width: 460px;
+  }
+  .sideCol {
+    grid-template-columns: 1fr;
   }
   .stage {
     padding: 28px 16px;
@@ -139,12 +162,6 @@ button {
 
 .cardTitle svg {
   opacity: 0.9;
-}
-
-.sideCol {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
 }
 
 /* -------------------- reveal animation -------------------- */
