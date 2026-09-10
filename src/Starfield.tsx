@@ -11,8 +11,11 @@ export function Starfield() {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+    // Non-null bindings so the closures below type-check under strict mode.
+    const cv: HTMLCanvasElement = canvas;
+    const ctx: CanvasRenderingContext2D = context;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let w = 0;
@@ -24,8 +27,8 @@ export function Starfield() {
       reduced ? 0 : window.innerWidth < 768 ? 120 : 220;
 
     function resize() {
-      w = canvas.width = window.innerWidth || 1;
-      h = canvas.height = window.innerHeight || 1;
+      w = cv.width = window.innerWidth || 1;
+      h = cv.height = window.innerHeight || 1;
       const n = count();
       dots = Array.from({ length: n }, () => ({
         x: Math.random() * w,
