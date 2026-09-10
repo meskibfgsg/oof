@@ -91,57 +91,20 @@ button {
 
 .layout {
   width: 100%;
-  max-width: 560px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 22px;
+  max-width: 880px;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 24px;
+  align-items: start;
 }
 
-/* the profile card is the dominant hero — biggest, brightest element on the page */
-.profileCard {
-  width: 100%;
-  margin: 0 auto;
-  padding: 38px 36px 32px;
-  border-color: var(--border-hover);
-  box-shadow:
-    0 32px 90px -28px rgba(0, 0, 0, 0.9),
-    0 0 0 1px rgba(255, 255, 255, 0.03),
-    0 0 90px -16px var(--gold-glow);
-}
-
-/* supporting cards are narrower + quieter so the profile stays the focal point */
-.sideCol {
-  width: 92%;
-  max-width: 440px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.sideCol .card {
-  padding: 20px 22px;
-  border-color: rgba(255, 255, 255, 0.05);
-}
-
-.sideCol .cardTitle {
-  font-size: 1rem;
-  margin-bottom: 12px;
-}
-
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   .layout {
-    max-width: 440px;
-    gap: 18px;
-  }
-  .profileCard {
-    padding: 30px 26px 26px;
-  }
-  .sideCol {
-    width: 100%;
+    grid-template-columns: 1fr;
+    max-width: 460px;
   }
   .stage {
-    padding: 24px 14px;
+    padding: 28px 16px;
   }
 }
 
@@ -176,6 +139,12 @@ button {
 
 .cardTitle svg {
   opacity: 0.9;
+}
+
+.sideCol {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 /* -------------------- reveal animation -------------------- */
@@ -239,10 +208,10 @@ button {
 
 .avatarRing {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 86px;
+  height: 86px;
   border-radius: 50%;
-  padding: 3px;
+  padding: 2.5px;
   background: conic-gradient(from 180deg, var(--gold), #6b5423, var(--gold));
 }
 
@@ -310,7 +279,7 @@ button {
 .displayName {
   font-family: var(--font-alt);
   font-weight: 700;
-  font-size: 1.85rem;
+  font-size: 1.55rem;
   letter-spacing: 0.2px;
   color: #fff;
   line-height: 1.1;
@@ -772,7 +741,7 @@ button {
     padding: 22px;
   }
   .displayName {
-    font-size: 1.55rem;
+    font-size: 1.4rem;
   }
 }
 
